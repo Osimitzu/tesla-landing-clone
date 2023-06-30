@@ -1,0 +1,87 @@
+---
+import Logo from "../components/Logo.astro";
+---
+
+<header
+  id="landing-header"
+  class="py-2 px-8 flex items-center fixed top-0 w-full justify-between z-40 text-current overflow-hidden"
+>
+  <div class="flex flex-grow overflow-hidden">
+    <a href="#home">
+      <Logo />
+    </a>
+  </div>
+
+  <nav class="overflow-hidden">
+    <ul
+      class="flex text-sm [&>li>a]:transition-colors [&>li>a]:duration-500 [&>li>a]:font-medium [&>li>a]:text-current [&>li>a]:inline-block [&>li>a]:px-4 [&>li>a]:py-2"
+    >
+      <li><a href="#modelS">Model S</a></li>
+      <li><a href="#model3">Model 3</a></li>
+      <li><a href="#modelX">Model X</a></li>
+      <li><a href="#modelY">Model Y</a></li>
+    </ul>
+  </nav>
+
+  <nav class="flex flex-grow justify-end overflow-hidden">
+    <ul
+      class="flex text-sm [&>li>a]:transition-colors [&>li>a]:duration-500 [&>li>a]:font-medium [&>li>a]:text-current [&>li>a]:inline-block [&>li>a]:px-4 [&>li>a]:py-2"
+    >
+      <li><a href="#home">Shop</a></li>
+      <li><a href="#home">Account</a></li>
+      <li><a href="#home">Menu</a></li>
+    </ul>
+  </nav>
+
+  <div
+    id="menu-backdrop"
+    class={`absolute bg-black/5 backdrop-blur-lg rounded translate-x-[var(--left)] translate-y-[var(--top)] left-0 top-0 w-[var(--width)] h-[var(--height)] transition-all duration-300 ease-in-out opacity-0 -z-10`}
+  >
+  </div>
+</header>
+
+<script>
+  const listItem = document.querySelectorAll("#landing-header li");
+  const menuBackdrop = document.querySelector("#menu-backdrop") as HTMLElement;
+
+  listItem.forEach((item) => {
+    item.addEventListener("mouseenter", () => {
+      const { left, top, width, height } = item.getBoundingClientRect();
+      // const { clientWidth, clientHeight } = item;
+
+      menuBackdrop.style.setProperty("--left", `${left}px`);
+      menuBackdrop.style.setProperty("--top", `${top}px`);
+      menuBackdrop.style.setProperty("--width", `${width}px`);
+      menuBackdrop.style.setProperty("--height", `${height}px`);
+      menuBackdrop.style.opacity = "1";
+      menuBackdrop.style.visibility = "visible";
+    });
+
+    item.addEventListener("mouseleave", () => {
+      menuBackdrop.style.opacity = "0";
+      menuBackdrop.style.visibility = "hidden";
+    });
+  });
+</script>
+
+<script>
+  const $header = document.querySelector("#landing-header") as HTMLElement;
+  const observerOptions = {
+    root: null,
+    rootMargin: "0px", // en cuanto se vea el elemento
+    threshold: 0.9, // porcentaje de visibilidad
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      const { isIntersecting } = entry;
+      if (isIntersecting) {
+        const color = entry.target.getAttribute("data-header-color");
+        $header.style.color = color;
+      }
+    });
+  }, observerOptions);
+
+  const $sections = document.querySelectorAll(".landing-section");
+  $sections.forEach((section) => observer.observe(section));
+</script>
